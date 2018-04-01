@@ -2,12 +2,12 @@
 #include <stdio.h>
 
 int 	lineCount=0;
-int		wordCount=0;
+int	wordCount=0;
 int 	numStrings = 5;
-char** 	lineContents = (char**) malloc(sizeof(char*) * numStrings);
+char ** lineContents = (char **) malloc(sizeof(char *) * 5);
 
 void addWordToLine();
-void freeLineContents();
+void endOfLine();
 void comment();
 
 %}
@@ -15,11 +15,11 @@ void comment();
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
 Digit 	    [0-9]
-Operator	[\+-\*/%><=!]
+Operator	[\+\-\*/%><=!]
 Punctuation [:;,\.\[\]\(\)\{\}]
 Exponent    [Ee][+-]?{Digit}+
 
-Char 		\'{letter}\'
+Char 		\'{Letter}\'
 String	    \"([^'\n]|\'\')+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
 
@@ -30,7 +30,6 @@ Integer		{Digit}+
 
 %%
 
-/*				{comment();}
 \n 				{endOfLine();}
 
 void			{printf("#key: %s\n",yytext);  addWordToLine();}
@@ -107,12 +106,12 @@ perror			{printf("#key: %s\n",yytext);  addWordToLine();}
 "||"			{printf("#op: %s\n",yytext);  addWordToLine();}
 
 {Operator}		{printf("#op: %s\n",yytext);  addWordToLine();}
-{Punctuation}	{printf("#punc: %s\n",yytext);  addWordToLine();}
+{Punctuation}		{printf("#punc: %s\n",yytext);  addWordToLine();}
 {Sci}			{printf("#sci: %s\n",yytext);  addWordToLine();}
 {Double}		{printf("#double: %s\n",yytext);  addWordToLine();}
 {Integer}		{printf("#integer: %s\n",yytext);  addWordToLine();}
 {Char}			{printf("#char: %s\n",yytext);  addWordToLine();}
-{Identifier}	{printf("#identifier: %s\n",yytext);  addWordToLine();}
+{Identifier}		{printf("#identifier: %s\n",yytext);  addWordToLine();}
 {String}		{printf("#string: %s\n",yytext);  addWordToLine();}
 
 %%
@@ -125,17 +124,17 @@ int main(void){
 void addWordToLine(){
 	if (wordCount>=numStrings-1){
 		numStrings*=2;
-		lineContents=realloc(lineContents,numStrings*sizeOf *lineContents);
+		lineContents=realloc(lineContents,numStrings*sizeof *lineContents);
 	}
-	lineContents[wordCount++] = (char*) malloc(sizeof(char) * yylen;
+	lineContents[wordCount++] = (char*) malloc(sizeof(char)) * yyleng;
 	strcpy(lineContents[wordCount],yytext);
 }
 
 void endOfLine(){
-	//printline
+	//print line
 	lineCount++;
-	printf(“%d:”, lineCount);
-	int j=0;
+	printf("%d:", lineCount);
+	int j;
 	for(j=0;j<wordCount;j++)
 		printf("%s",lineContents[j]);
 	printf("\n");
