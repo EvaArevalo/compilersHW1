@@ -4,7 +4,7 @@
 int 	lineCount=0;
 int	wordCount=0;
 int 	numStrings = 5;
-char ** lineContents = (char **) malloc(sizeof(char *) * 5);
+char	**lineContents = NULL;
 
 void addWordToLine();
 void endOfLine();
@@ -116,6 +116,7 @@ perror			{printf("#key: %s\n",yytext);  addWordToLine();}
 
 %%
 int main(void){
+  lineContents = (char**)malloc(sizeof(char*)*numStrings);  
   yylex();
   return 0;
 } 
@@ -126,8 +127,9 @@ void addWordToLine(){
 		numStrings*=2;
 		lineContents=realloc(lineContents,numStrings*sizeof *lineContents);
 	}
-	lineContents[wordCount++] = (char*) malloc(sizeof(char)) * yyleng;
+	lineContents[wordCount] = (char*) malloc(sizeof(char) * yyleng + 1);
 	strcpy(lineContents[wordCount],yytext);
+	wordCount++;
 }
 
 void endOfLine(){
