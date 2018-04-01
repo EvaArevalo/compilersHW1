@@ -13,6 +13,8 @@ void comment();
 
 %}
 
+%x SINGLECOMMENT MULTICOMMENT
+
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
 Digit 	    [0-9]
@@ -30,11 +32,14 @@ Integer		{Digit}+
 
 
 %%
-
-\n 				{endOfLine();}
+//			{BEGIN SINGLECOMMENT;}
+<SINGLECOMMENT>[^ }\n]+	{addWordtoLine();}
+<SINGLECOMMENT>\n	{endOfLine(); BEGIN 0;}
+/*			{BEGIN MULTICOMMENT;}
+\n 			{endOfLine();}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-int				{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+int			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 double   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 bool   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 char   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -76,7 +81,7 @@ setvbuf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 tmpfile 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 tmpnam 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 ffprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fprintf 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+fprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 sfprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 vffprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 vfprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
