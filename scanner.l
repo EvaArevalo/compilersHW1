@@ -105,6 +105,7 @@ perror			{printf("#key: %s\n",yytext);  addWordToLine();}
 "&&"			{printf("#op: %s\n",yytext);  addWordToLine();}
 "||"			{printf("#op: %s\n",yytext);  addWordToLine();}
 
+{Whitespace}		/*do nothing*/
 {Operator}		{printf("#op: %s\n",yytext);  addWordToLine();}
 {Punctuation}		{printf("#punc: %s\n",yytext);  addWordToLine();}
 {Sci}			{printf("#sci: %s\n",yytext);  addWordToLine();}
@@ -156,4 +157,8 @@ void endOfLine(){
 //TODO: comments
 void comments(){
 
+}
+
+int yywrap(){
+	return 1; /*eof*/
 }
