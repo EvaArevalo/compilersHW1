@@ -1,0 +1,12 @@
+TODO:
+1.Add patterns: keywords from stdio.h 	DONE
+				operators
+				punctuation
+				int, double, expo
+				id, comments
+2. Handle Comments
+3. Check malloc scheme
+4. Pragma directives
+5. Errors
+6. Makefile
+7. Test
