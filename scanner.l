@@ -105,14 +105,14 @@ perror			{printf("#key: %s\n",yytext);  addWordToLine();}
 "&&"			{printf("#op: %s\n",yytext);  addWordToLine();}
 "||"			{printf("#op: %s\n",yytext);  addWordToLine();}
 
-{Whitespace}	/*do nothing*/
+{Whitespace}		/*do nothing*/
 {Operator}		{printf("#op: %s\n",yytext);  addWordToLine();}
-{Punctuation}	{printf("#punc: %s\n",yytext);  addWordToLine();}
+{Punctuation}		{printf("#punc: %s\n",yytext);  addWordToLine();}
 {Sci}			{printf("#sci: %s\n",yytext);  addWordToLine();}
 {Double}		{printf("#double: %s\n",yytext);  addWordToLine();}
 {Integer}		{printf("#integer: %s\n",yytext);  addWordToLine();}
 {Char}			{printf("#char: %s\n",yytext);  addWordToLine();}
-{Identifier}	{printf("#identifier: %s\n",yytext);  addWordToLine();}
+{Identifier}		{printf("#identifier: %s\n",yytext);  addWordToLine();}
 {String}		{printf("#string: %s\n",yytext);  addWordToLine();}
 
 %%
@@ -147,8 +147,10 @@ void endOfLine(){
 	lineCount++;
 	printf("%d:", lineCount);
 	int j;
-	for(j=0;j<wordCount;j++)
+	for(j=0;j<wordCount;j++){
+		if(j!=0) printf(" ");
 		printf("%s",lineContents[j]);
+	}
 	printf("\n");
 
 	//free lineContents
