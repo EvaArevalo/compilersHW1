@@ -10,3 +10,6 @@ TODO:
 5. Errors
 6. Makefile
 7. Test
+
+Question:
+1. echo vs printf
