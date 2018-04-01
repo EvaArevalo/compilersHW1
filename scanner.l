@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int 	lineCount=0;
-int	wordCount=0;
+int		wordCount=0;
 int 	numStrings = 5;
 char	**lineContents = NULL;
 
@@ -105,18 +105,27 @@ perror			{printf("#key: %s\n",yytext);  addWordToLine();}
 "&&"			{printf("#op: %s\n",yytext);  addWordToLine();}
 "||"			{printf("#op: %s\n",yytext);  addWordToLine();}
 
-{Whitespace}		/*do nothing*/
+{Whitespace}	/*do nothing*/
 {Operator}		{printf("#op: %s\n",yytext);  addWordToLine();}
-{Punctuation}		{printf("#punc: %s\n",yytext);  addWordToLine();}
+{Punctuation}	{printf("#punc: %s\n",yytext);  addWordToLine();}
 {Sci}			{printf("#sci: %s\n",yytext);  addWordToLine();}
 {Double}		{printf("#double: %s\n",yytext);  addWordToLine();}
 {Integer}		{printf("#integer: %s\n",yytext);  addWordToLine();}
 {Char}			{printf("#char: %s\n",yytext);  addWordToLine();}
-{Identifier}		{printf("#identifier: %s\n",yytext);  addWordToLine();}
+{Identifier}	{printf("#identifier: %s\n",yytext);  addWordToLine();}
 {String}		{printf("#string: %s\n",yytext);  addWordToLine();}
 
 %%
-int main(void){
+int main(int argc, char*argv[]){
+  ++argv;
+  --argc;	/*skip over program name*/
+
+  if (0<argc){
+  	yyin = fopen(argv[0], "r");
+  } else {
+  	yyin=stdin;
+  }
+
   lineContents = (char**)malloc(sizeof(char*)*numStrings);  
   yylex();
   return 0;
@@ -126,7 +135,7 @@ int main(void){
 void addWordToLine(){
 	if (wordCount>=numStrings-1){
 		numStrings*=2;
-		lineContents=realloc(lineContents,numStrings*sizeof *lineContents);
+		lineContents=realloc(lineContents,numStrings*sizeof(lineContents));
 	}
 	lineContents[wordCount] = (char*) malloc(sizeof(char) * yyleng + 1);
 	strcpy(lineContents[wordCount],yytext);

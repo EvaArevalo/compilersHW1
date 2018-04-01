@@ -4,14 +4,11 @@
 CC=gcc
 LEX=flex
 
-scanner: scanner.o test.o
+scanner: lex.yy.c
 		$(CC) -o $@ $(LDFLAGS) $^
 
-test.o: test.c
-		$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $^
-
-lex.yy.o: lex.yy.c
-		$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $^
+#lex.yy.o: lex.yy.c
+#		$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $^
 
 lex.yy.c: scanner.l
 		$(LEX) $(LFLAGS) -o $@ $^
