@@ -32,7 +32,15 @@ Sciint	    {Integer}{Exponent}
 Char        \'[ -~]\'
 String	    \"[ -~]+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
+<<<<<<< HEAD
 Pragma		[#][^\n]
+=======
+badstring 	\"([^'\n]|\'\')+
+Pragmason	[#]["pragma source on"]
+Pragmasoff  [#]["pragma source off"]
+Pragmaton	[#]["pragma token on"]
+Pragmatoff  [#]["pragma token off"]
+>>>>>>> 41e55aac8ebf26508a09d20b5718da8877b50ea1
 
 %%
 
@@ -44,8 +52,9 @@ Pragma		[#][^\n]
 <MULTICOMMENT>"*"+"/" 		{BEGIN(INITIAL);}
 
 "//"				{addWordToLine(); BEGIN(SINGLECOMMENT);}  
-<SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
-<SINGLECOMMENT>{Whitespace} 	{addWordToLine();}
+<SINGLECOMMENT>[^\n]		{addWordToLine();}	
+//<SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
+//<SINGLECOMMENT>{Whitespace} {addWordToLine();}
 <SINGLECOMMENT>\n 		{endOfLine();BEGIN(INITIAL);}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -134,8 +143,10 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 {String}		{char *stringtext= (char*)malloc(sizeof(char)*yyleng-2);
 			strncpy(stringtext,&yytext[1],yyleng-2);
 			fprintf(f,"#string:%s\n",stringtext);
-			addWordToLine();}
-{Pragma}		{addWordToLine();}
+{Pragmason}		{addWordToLine();}
+{Pragmasoff}		{addWordToLine();}
+{Pragmaton}		{addWordToLine();}
+{Pragmatoff}		{addWordToLine();}
 
 \n 				{endOfLine();}
 .				{yyerror();addWordToLine();}
