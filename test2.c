@@ -11,5 +11,5 @@ int main () {
                 a = a * 1.23e-1;
         }
         return 0;
- 
+
 }
