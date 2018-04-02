@@ -31,7 +31,10 @@ Char        \'[ -~]\'
 String	    \"([^'\n]|\'\')+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
 badstring 	\"([^'\n]|\'\')+
-Pragma		[#][^\n]
+Pragmason	[#]["pragma source on"]
+Pragmasoff  [#]["pragma source off"]
+Pragmaton	[#]["pragma token on"]
+Pragmatoff  [#]["pragma token off"]
 
 %%
 
@@ -42,9 +45,10 @@ Pragma		[#][^\n]
 <MULTICOMMENT>\n			{endOfLine();}
 <MULTICOMMENT>"*"+"/" 		{BEGIN(INITIAL);}
 
-"//"  
-<SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
-<SINGLECOMMENT>{Whitespace} {addWordToLine();}
+"//"						{BEGIN(SINGLECOMMENT);}
+<SINGLECOMMENT>[^\n]		{addWordToLine();}	
+//<SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
+//<SINGLECOMMENT>{Whitespace} {addWordToLine();}
 <SINGLECOMMENT>\n 			{endOfLine();BEGIN(INITIAL);}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -132,7 +136,10 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 {Identifier}	{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
 {String}		{fprintf(f,"#string:%s\n",yytext);  addWordToLine();}
 {Badstring}		{yyerror("Invalid String"); addWordToLine();}
-{Pragma}		{addWordToLine();}
+{Pragmason}		{addWordToLine();}
+{Pragmasoff}	{addWordToLine();}
+{Pragmaton}		{addWordToLine();}
+{Pragmatoff}	{addWordToLine();}
 
 \n 				{endOfLine();}
 .				{yyerror("Illegal input");addWordToLine();}
