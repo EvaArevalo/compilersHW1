@@ -30,13 +30,25 @@ Sciint	    {Integer}{Exponent}
 Char        \'[ -~]\'
 String	    \"([^'\n]|\'\')+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
+badstring 	\"([^'\n]|\'\')+
+Pragma		[#][^\n]
 
 %%
 
-\n 			{endOfLine();}
+"/*"						{BEGIN(MULTICOMMENT);}
+<MULTICOMMENT>[^*\n \t]*	{addWordToLine();} /* eat anythong that's not a '*' */
+<MULTICOMMENT>"*"+[^*/\n]*  {addWordToLine();} /* eat '*' not followed by '/' */
+<MULTICOMMENT>{Whitespace}	{addWordToLine();}
+<MULTICOMMENT>\n			{endOfLine();}
+<MULTICOMMENT>"*"+"/" 		{BEGIN(INITIAL);}
+
+"//"  
+<SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
+<SINGLECOMMENT>{Whitespace} {addWordToLine();}
+<SINGLECOMMENT>\n 			{endOfLine();BEGIN(INITIAL);}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-int			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+int				{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 double   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 bool   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 char   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -109,16 +121,21 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 "&&"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 "||"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 
-{Whitespace}		{addWordToLine();}
+{Whitespace}	{addWordToLine();}
 {Operator}		{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-{Punctuation}		{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
+{Punctuation}	{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
 {Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
 {Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
 {Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine();}
 {Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine();}
 {Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
-{Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
+{Identifier}	{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
 {String}		{fprintf(f,"#string:%s\n",yytext);  addWordToLine();}
+{Badstring}		{yyerror("Invalid String"); addWordToLine();}
+{Pragma}		{addWordToLine();}
+
+\n 				{endOfLine();}
+.				{yyerror("Illegal input");addWordToLine();}
 
 %%
 int main(int argc, char*argv[]){
