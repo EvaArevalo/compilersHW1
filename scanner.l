@@ -18,24 +18,21 @@ void comment();
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
 Digit 	    [0-9]
-Operator	[\+\-\*/%><=!]
+Operator    [\+\-\*/%><=!]
 Punctuation [:;,\.\[\]\(\)\{\}]
 Exponent    [Ee][+-]?{Digit}+
 
-Char 		\'[ -~]\'
+Integer	    {Digit}+
+Double	    {Integer}?[\.]{Integer}
+Scidouble   {Double}{Exponent}
+Sciint	    {Integer}{Exponent}
+
+Char        \'[ -~]\'
 String	    \"([^'\n]|\'\')+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
 
-Sci 		{Digit}+Exponent
-Double		{Digit}*[\.]{Digit}+
-Integer		{Digit}+
-
-
 %%
-//			{BEGIN SINGLECOMMENT;}
-<SINGLECOMMENT>[^ }\n]+	{addWordtoLine();}
-<SINGLECOMMENT>\n	{endOfLine(); BEGIN 0;}
-/*			{BEGIN MULTICOMMENT;}
+
 \n 			{endOfLine();}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -101,6 +98,7 @@ putchar 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 puts 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 ungetc 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 perror			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 
 "++"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 "--"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
@@ -111,10 +109,11 @@ perror			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 "&&"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 "||"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 
-{Whitespace}		/*do nothing*/
+{Whitespace}		{addWordToLine();}
 {Operator}		{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 {Punctuation}		{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
-{Sci}			{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
+{Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
+{Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
 {Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine();}
 {Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine();}
 {Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
@@ -132,7 +131,7 @@ int main(int argc, char*argv[]){
   	yyin=stdin;
   }
   
-  f = fopen("tokens","w");
+  f = fopen("tokens.out","w");
 
   lineContents = (char**)malloc(sizeof(char*)*numStrings);  
   yylex();
@@ -156,10 +155,8 @@ void endOfLine(){
 	lineCount++;
 	fprintf(f,"%d:", lineCount);
 	int j;
-	for(j=0;j<wordCount;j++){
-		if(j!=0) fprintf(f," ");
+	for(j=0;j<wordCount;j++)
 		fprintf(f,"%s",lineContents[j]);
-	}
 	fprintf(f,"\n");
 
 	//free lineContents

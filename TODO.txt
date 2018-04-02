@@ -8,8 +8,9 @@ TODO:
 3. Check malloc scheme
 4. Pragma directives
 5. Errors
-6. Makefile
+6. Makefile DONE
 7. Test
 
 Question:
 1. echo vs printf
+2. name of the output file
