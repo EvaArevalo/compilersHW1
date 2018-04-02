@@ -10,6 +10,8 @@ FILE*	f;
 void addWordToLine();
 void endOfLine();
 void comment();
+int yywrap();
+void yyerror();
 
 %}
 
@@ -28,24 +30,23 @@ Scidouble   {Double}{Exponent}
 Sciint	    {Integer}{Exponent}
 
 Char        \'[ -~]\'
-String	    \"([^'\n]|\'\')+\"
+String	    \"[ -~]+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
-badstring 	\"([^'\n]|\'\')+
 Pragma		[#][^\n]
 
 %%
 
-"/*"						{BEGIN(MULTICOMMENT);}
+"/*"				{addWordToLine(); BEGIN(MULTICOMMENT);}
 <MULTICOMMENT>[^*\n \t]*	{addWordToLine();} /* eat anythong that's not a '*' */
-<MULTICOMMENT>"*"+[^*/\n]*  {addWordToLine();} /* eat '*' not followed by '/' */
+<MULTICOMMENT>"*"+[^*/\n]*  	{addWordToLine();} /* eat '*' not followed by '/' */
 <MULTICOMMENT>{Whitespace}	{addWordToLine();}
-<MULTICOMMENT>\n			{endOfLine();}
+<MULTICOMMENT>\n		{endOfLine();}
 <MULTICOMMENT>"*"+"/" 		{BEGIN(INITIAL);}
 
-"//"  
+"//"				{addWordToLine(); BEGIN(SINGLECOMMENT);}  
 <SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
-<SINGLECOMMENT>{Whitespace} {addWordToLine();}
-<SINGLECOMMENT>\n 			{endOfLine();BEGIN(INITIAL);}
+<SINGLECOMMENT>{Whitespace} 	{addWordToLine();}
+<SINGLECOMMENT>\n 		{endOfLine();BEGIN(INITIAL);}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 int				{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -121,21 +122,23 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 "&&"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 "||"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 
-{Whitespace}	{addWordToLine();}
+{Whitespace}		{addWordToLine();}
 {Operator}		{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-{Punctuation}	{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
+{Punctuation}		{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
 {Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
 {Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
 {Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine();}
 {Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine();}
 {Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
-{Identifier}	{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
-{String}		{fprintf(f,"#string:%s\n",yytext);  addWordToLine();}
-{Badstring}		{yyerror("Invalid String"); addWordToLine();}
+{Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
+{String}		{char *stringtext= (char*)malloc(sizeof(char)*yyleng-2);
+			strncpy(stringtext,&yytext[1],yyleng-2);
+			fprintf(f,"#string:%s\n",stringtext);
+			addWordToLine();}
 {Pragma}		{addWordToLine();}
 
 \n 				{endOfLine();}
-.				{yyerror("Illegal input");addWordToLine();}
+.				{yyerror();addWordToLine();}
 
 %%
 int main(int argc, char*argv[]){
@@ -170,6 +173,7 @@ void addWordToLine(){
 void endOfLine(){
 	//print line
 	lineCount++;
+
 	fprintf(f,"%d:", lineCount);
 	int j;
 	for(j=0;j<wordCount;j++)
@@ -195,4 +199,14 @@ void comments(){
 
 int yywrap(){
 	return 1; /*eof*/
+}
+
+void yyerror(char *message){
+	fprintf(f, "Error at line %d: ",lineCount);
+
+	//free lineContents
+	int i;
+	for(i=0;i<wordCount;i++)
+		free(lineContents[i]);
+	wordCount=0;
 }
