@@ -12,10 +12,11 @@ void endOfLine();
 void comment();
 int yywrap();
 void yyerror();
+void freeLineContents();
 
 %}
 
-%x SINGLECOMMENT MULTICOMMENT
+%x PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
 
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
@@ -32,17 +33,17 @@ Sciint	    {Integer}{Exponent}
 Char        \'[ -~]\'
 String	    \"[ -~]+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
-<<<<<<< HEAD
-Pragma		[#][^\n]
-=======
-badstring 	\"([^'\n]|\'\')+
-Pragmason	[#]["pragma source on"]
-Pragmasoff  [#]["pragma source off"]
-Pragmaton	[#]["pragma token on"]
-Pragmatoff  [#]["pragma token off"]
->>>>>>> 41e55aac8ebf26508a09d20b5718da8877b50ea1
+Pragma	    [#][^\n]
 
 %%
+
+{Pragma}			{addWordToLine(); BEGIN(PRAGMA);}
+<PRAGMA>"source on"		{addWordToLine();}
+<PRAGMA>"source off"		{freeLineContents();} 
+<PRAGMA>"token on"		{addWordToLine();} 
+<PRAGMA>"token off"		{addWordToLine();}
+<PRAGMA>.			{yyerror();addWordToLine();}
+<PRAGMA>\n			{endOfLine(); BEGIN(INITIAL);}
 
 "/*"				{addWordToLine(); BEGIN(MULTICOMMENT);}
 <MULTICOMMENT>[^*\n \t]*	{addWordToLine();} /* eat anythong that's not a '*' */
@@ -167,6 +168,7 @@ int main(int argc, char*argv[]){
   lineContents = (char**)malloc(sizeof(char*)*numStrings);  
   yylex();
   fclose(f);
+  freeLineContents();
   return 0;
 } 
 
@@ -191,16 +193,9 @@ void endOfLine(){
 		fprintf(f,"%s",lineContents[j]);
 	fprintf(f,"\n");
 
-	//free lineContents
-	int i;
-	for(i=0;i<wordCount;i++)
-		free(lineContents[i]);
-	free(lineContents);
-
-	//reallocate, reset vars
+	//free and reallocate, reset vars
+	freeLineContents();
 	lineContents = (char**) malloc(sizeof(char*) * numStrings);
-	numStrings=5;
-	wordCount=0;
 }
 
 //TODO: comments
@@ -214,10 +209,17 @@ int yywrap(){
 
 void yyerror(char *message){
 	fprintf(f, "Error at line %d: ",lineCount);
+	//free and reallocate, reset vars
+	freeLineContents();
+	lineContents = (char**) malloc(sizeof(char*) * numStrings);
+}
 
-	//free lineContents
+void freeLineContents(){
+
 	int i;
 	for(i=0;i<wordCount;i++)
 		free(lineContents[i]);
+	free(lineContents);
+	numStrings=5;
 	wordCount=0;
 }
