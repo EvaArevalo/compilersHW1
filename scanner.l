@@ -16,7 +16,7 @@ void freeLineContents();
 
 %}
 
-%x PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
+%x STRING PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
 
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
@@ -33,33 +33,37 @@ Sciint	    {Integer}{Exponent}
 Char        \'[ -~]\'
 String	    \"[ -~]+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
-Pragma	    [#][^\n]
+Pragma	    [#]
 
 %%
 
 {Pragma}			{addWordToLine(); BEGIN(PRAGMA);}
-<PRAGMA>"source on"		{addWordToLine();}
-<PRAGMA>"source off"		{freeLineContents();} 
-<PRAGMA>"token on"		{addWordToLine();} 
-<PRAGMA>"token off"		{addWordToLine();}
-<PRAGMA>.			{yyerror();addWordToLine();}
+<PRAGMA>"pragma source on"	{addWordToLine();}
+<PRAGMA>"pragma source off"	{freeLineContents();
+  				lineContents = (char**)malloc(sizeof(char*)*numStrings);} 
+<PRAGMA>"pragma token on"	{addWordToLine();} 
+<PRAGMA>"pragma token off"	{addWordToLine();}
+<PRAGMA>.			{yyerror(); addWordToLine(); BEGIN(ERROR);}
 <PRAGMA>\n			{endOfLine(); BEGIN(INITIAL);}
+
+
+<ERROR>.			{addWordToLine();}
+<ERROR>\n			{endOfLine(); BEGIN(INITIAL);}
+
 
 "/*"				{addWordToLine(); BEGIN(MULTICOMMENT);}
 <MULTICOMMENT>[^*\n \t]*	{addWordToLine();} /* eat anythong that's not a '*' */
 <MULTICOMMENT>"*"+[^*/\n]*  	{addWordToLine();} /* eat '*' not followed by '/' */
 <MULTICOMMENT>{Whitespace}	{addWordToLine();}
 <MULTICOMMENT>\n		{endOfLine();}
-<MULTICOMMENT>"*"+"/" 		{BEGIN(INITIAL);}
+<MULTICOMMENT>"*"+"/" 		{addWordToLine(); BEGIN(INITIAL);}
 
 "//"				{addWordToLine(); BEGIN(SINGLECOMMENT);}  
-<SINGLECOMMENT>[^\n]		{addWordToLine();}	
-//<SINGLECOMMENT>[^\n \tab]	{addWordToLine();}
-//<SINGLECOMMENT>{Whitespace} {addWordToLine();}
+<SINGLECOMMENT>.		{addWordToLine();}	
 <SINGLECOMMENT>\n 		{endOfLine();BEGIN(INITIAL);}
 
 void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-int				{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+int			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 double   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 bool   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 char   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
@@ -141,16 +145,13 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 {Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine();}
 {Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
 {Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
-{String}		{char *stringtext= (char*)malloc(sizeof(char)*yyleng-2);
+{String}		{char *stringtext= (char*)malloc(sizeof(char)*(yylen-1));
 			strncpy(stringtext,&yytext[1],yyleng-2);
 			fprintf(f,"#string:%s\n",stringtext);
-{Pragmason}		{addWordToLine();}
-{Pragmasoff}		{addWordToLine();}
-{Pragmaton}		{addWordToLine();}
-{Pragmatoff}		{addWordToLine();}
-
-\n 				{endOfLine();}
-.				{yyerror();addWordToLine();}
+			addWordToLine();
+			free(stringtext);}
+\n 			{endOfLine();}
+.			{yyerror();BEGIN(ERROR);}
 
 %%
 int main(int argc, char*argv[]){
@@ -208,7 +209,7 @@ int yywrap(){
 }
 
 void yyerror(char *message){
-	fprintf(f, "Error at line %d: ",lineCount);
+	fprintf(f, "Error at line ");
 	//free and reallocate, reset vars
 	freeLineContents();
 	lineContents = (char**) malloc(sizeof(char*) * numStrings);

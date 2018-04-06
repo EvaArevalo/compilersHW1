@@ -13,6 +13,10 @@ ad2
 “abcdefg
 _id
 @error
+#pragma source on
+#pragma source off
+#pragma token on
+#pragma token off
 #pragma something off
 /*multilne comment
 second line
