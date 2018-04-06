@@ -58,7 +58,12 @@ Pragma	    [#]
 					free(stringtext);
 					wordCount++;
 					addWordToLine(); BEGIN(ERROR);}
-<NUMBERCHECK>.		{unput(yytext); BEGIN(INITIAL);}
+<NUMBERCHECK>.		
+					/*Puts yytext contents back into lineContents array*/
+					{int i;
+					for (i=0; i<yyleng; i++)
+						unput(yytext[i]);
+					BEGIN(INITIAL);}
 
 <ERROR>.			{addWordToLine();}
 <ERROR>\n			{endOfLine(); BEGIN(INITIAL);}
