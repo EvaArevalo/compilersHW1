@@ -16,7 +16,7 @@ void freeLineContents();
 
 %}
 
-%x STRING PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
+%x NUMBERCHECK PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
 
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
@@ -46,6 +46,19 @@ Pragma	    [#]
 <PRAGMA>.			{yyerror(); addWordToLine(); BEGIN(ERROR);}
 <PRAGMA>\n			{endOfLine(); BEGIN(INITIAL);}
 
+<NUMBERCHECK>{Double}|{Id}|{Exponent}
+					/*copies the last number, sets error message, replaces number into 
+					lineCount array, adds offending bit to lineContents array, and 
+					starts the ERROR condition*/
+					{char *stringtext = (char*)malloc(sizeof(lineContents[wordCount-1]));
+					strcpy(stringtext,lineContents[wordCount-1]);
+					yyerror(); 
+					char *lineContents[wordCount]=(char*)malloc(sizeof(stringtext));
+					strcpy(lineContents[wordCount],stringtext);
+					free(stringtext);
+					wordCount++;
+					addWordToLine(); BEGIN(ERROR);}
+<NUMBERCHECK>.		{unput(yytext); BEGIN(INITIAL);}
 
 <ERROR>.			{addWordToLine();}
 <ERROR>\n			{endOfLine(); BEGIN(INITIAL);}
@@ -139,13 +152,13 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 {Whitespace}		{addWordToLine();}
 {Operator}		{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 {Punctuation}		{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
-{Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
-{Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine();}
-{Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine();}
-{Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine();}
+{Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
+{Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
+{Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
+{Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
 {Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
 {Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
-{String}		{char *stringtext= (char*)malloc(sizeof(char)*(yylen-1));
+{String}		{char *stringtext= (char*)malloc(sizeof(char)*(yyleng-1));
 			strncpy(stringtext,&yytext[1],yyleng-2);
 			fprintf(f,"#string:%s\n",stringtext);
 			addWordToLine();
@@ -154,6 +167,11 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 .			{yyerror();BEGIN(ERROR);}
 
 %%
+
+/*-----------------------
+main() set yyin() as the argument passed on command line and
+outputs to file "tokens", calls lexer, closes and  cleans up 
+------------------------*/
 int main(int argc, char*argv[]){
   ++argv;
   --argc;	/*skip over program name*/
@@ -164,7 +182,7 @@ int main(int argc, char*argv[]){
   	yyin=stdin;
   }
   
-  f = fopen("tokens.out","w");
+  f = fopen("tokens","w");
 
   lineContents = (char**)malloc(sizeof(char*)*numStrings);  
   yylex();
@@ -173,7 +191,10 @@ int main(int argc, char*argv[]){
   return 0;
 } 
 
-//TODO: check realocation scheme
+/*-----------------------
+addWordToLine() Adds word to line, dynamically allocates more space if 
+needed
+------------------------*/
 void addWordToLine(){
 	if (wordCount>=numStrings-1){
 		numStrings*=2;
@@ -184,6 +205,9 @@ void addWordToLine(){
 	wordCount++;
 }
 
+/*-----------------------
+endOfLine() Flushes a synctactically correct line to the file
+------------------------*/
 void endOfLine(){
 	//print line
 	lineCount++;
@@ -199,15 +223,14 @@ void endOfLine(){
 	lineContents = (char**) malloc(sizeof(char*) * numStrings);
 }
 
-//TODO: comments
-void comments(){
-
-}
 
 int yywrap(){
 	return 1; /*eof*/
 }
 
+/*-----------------------
+yyerror()  
+------------------------*/
 void yyerror(char *message){
 	fprintf(f, "Error at line ");
 	//free and reallocate, reset vars
@@ -215,6 +238,9 @@ void yyerror(char *message){
 	lineContents = (char**) malloc(sizeof(char*) * numStrings);
 }
 
+/*-----------------------
+addWordToLine() Clean up dynamically allocated array lineContents() 
+------------------------*/
 void freeLineContents(){
 
 	int i;
