@@ -25,6 +25,7 @@ Operator    [\+\-\*/%><=!]
 Punctuation [:;,\.\[\]\(\)\{\}]
 Exponent    [Ee][+-]?{Digit}+
 
+Invalidnum  ({Integer}|{Double}|{Sciint}|{Scidouble})+({Identifier}|{Exponent}|\.)
 Integer	    {Digit}+
 Double	    {Integer}?[\.]{Integer}
 Scidouble   {Double}{Exponent}
@@ -35,7 +36,6 @@ String	    \"[ -~]+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
 Pragma	    [#]
 
-Invalidnum  {Integer}|{Double}|{Sciint}|{Scidouble}+{Identifier}|{Exponent}|\.
 %%
 
 {Pragma}			{addWordToLine(); BEGIN(PRAGMA);}
@@ -45,11 +45,14 @@ Invalidnum  {Integer}|{Double}|{Sciint}|{Scidouble}+{Identifier}|{Exponent}|\.
 				BEGIN(INITIAL);} 
 <PRAGMA>"pragma token on"	{addWordToLine();} 
 <PRAGMA>"pragma token off"	{addWordToLine();}
-<PRAGMA>.			{yyerror(); addWordToLine(); BEGIN(ERROR);}
+<PRAGMA>.			{freeLineContents();
+  				lineContents = (char**)malloc(sizeof(char*)*numStrings); 
+ 				addWordToLine();
+				 BEGIN(ERROR);}
 <PRAGMA>\n			{endOfLine(); BEGIN(INITIAL);}
 
 <ERROR>.			{addWordToLine();}
-<ERROR>\n			{endOfLine(); BEGIN(INITIAL);}
+<ERROR>\n			{yyerror(); BEGIN(INITIAL);}
 
 
 "/*"				{addWordToLine(); BEGIN(MULTICOMMENT);}
@@ -152,9 +155,16 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 			fprintf(f,"#string:%s\n",stringtext);
 			addWordToLine();
 			free(stringtext);}
-{Invalidnum}		{yyerror(); addWordToLine(); BEGIN(ERROR);}
+{Invalidnum}		{freeLineContents();
+  			lineContents = (char**)malloc(sizeof(char*)*numStrings); 
+ 			addWordToLine();
+			BEGIN(ERROR);}
 \n 			{endOfLine();}
-.			{yyerror();addWordToLine();BEGIN(ERROR);}
+.			{freeLineContents();
+  			lineContents = (char**)malloc(sizeof(char*)*numStrings); 
+ 			addWordToLine();
+			BEGIN(ERROR);}
+
 
 %%
 
@@ -219,10 +229,15 @@ int yywrap(){
 }
 
 /*-----------------------
-yyerror()  
+yyerror() Prints error to stderr  
 ------------------------*/
 void yyerror(char *message){
-	fprintf(f, "Error at line ");
+	fprintf(stderr, "Error at line %d: ",lineCount);
+	int j;
+	for(j=0;j<wordCount;j++)
+		fprintf(stderr,"%s",lineContents[wordCount]);
+	fprintf(stderr,"\n");
+	exit(1);
 	//free and reallocate, reset vars
 	freeLineContents();
 	lineContents = (char**) malloc(sizeof(char*) * numStrings);
@@ -240,3 +255,4 @@ void freeLineContents(){
 	numStrings=5;
 	wordCount=0;
 }
+
