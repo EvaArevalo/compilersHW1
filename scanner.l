@@ -35,35 +35,18 @@ String	    \"[ -~]+\"
 Identifier  [_a-zA-Z][_a-zA-Z0-9]*
 Pragma	    [#]
 
+Invalidnum  {Integer}|{Double}|{Sciint}|{Scidouble}+{Identifier}|{Exponent}|\.
 %%
 
 {Pragma}			{addWordToLine(); BEGIN(PRAGMA);}
 <PRAGMA>"pragma source on"	{addWordToLine();}
-<PRAGMA>"pragma source off"	{freeLineContents();
-  				lineContents = (char**)malloc(sizeof(char*)*numStrings);} 
+<PRAGMA>"pragma source off"+\n	{freeLineContents();
+  				lineContents = (char**)malloc(sizeof(char*)*numStrings);
+				BEGIN(INITIAL);} 
 <PRAGMA>"pragma token on"	{addWordToLine();} 
 <PRAGMA>"pragma token off"	{addWordToLine();}
 <PRAGMA>.			{yyerror(); addWordToLine(); BEGIN(ERROR);}
 <PRAGMA>\n			{endOfLine(); BEGIN(INITIAL);}
-
-<NUMBERCHECK>{Double}|{Id}|{Exponent}
-					/*copies the last number, sets error message, replaces number into 
-					lineCount array, adds offending bit to lineContents array, and 
-					starts the ERROR condition*/
-					{char *stringtext = (char*)malloc(sizeof(lineContents[wordCount-1]));
-					strcpy(stringtext,lineContents[wordCount-1]);
-					yyerror(); 
-					char *lineContents[wordCount]=(char*)malloc(sizeof(stringtext));
-					strcpy(lineContents[wordCount],stringtext);
-					free(stringtext);
-					wordCount++;
-					addWordToLine(); BEGIN(ERROR);}
-<NUMBERCHECK>.		
-					/*Puts yytext contents back into lineContents array*/
-					{int i;
-					for (i=0; i<yyleng; i++)
-						unput(yytext[i]);
-					BEGIN(INITIAL);}
 
 <ERROR>.			{addWordToLine();}
 <ERROR>\n			{endOfLine(); BEGIN(INITIAL);}
@@ -157,10 +140,10 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 {Whitespace}		{addWordToLine();}
 {Operator}		{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
 {Punctuation}		{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
-{Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
-{Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
-{Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
-{Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine(); BEGIN(NUMBERCHECK);}
+{Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); }
+{Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); }
+{Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine(); }
+{Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine(); }
 {Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
 {Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
 {String}		{char *stringtext= (char*)malloc(sizeof(char)*(yyleng-1));
@@ -169,8 +152,9 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 			fprintf(f,"#string:%s\n",stringtext);
 			addWordToLine();
 			free(stringtext);}
+{Invalidnum}		{yyerror(); addWordToLine(); BEGIN(ERROR);}
 \n 			{endOfLine();}
-.			{yyerror();BEGIN(ERROR);}
+.			{yyerror();addWordToLine();BEGIN(ERROR);}
 
 %%
 
