@@ -165,6 +165,7 @@ printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
 {Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
 {String}		{char *stringtext= (char*)malloc(sizeof(char)*(yyleng-1));
 			strncpy(stringtext,&yytext[1],yyleng-2);
+			strncpy(&stringtext[yyleng-2],&yytext[yyleng],1);
 			fprintf(f,"#string:%s\n",stringtext);
 			addWordToLine();
 			free(stringtext);}
