@@ -16,7 +16,7 @@ void freeLineContents();
 
 %}
 
-%x NUMBERCHECK PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
+%x PRAGMA ERROR SINGLECOMMENT MULTICOMMENT
 
 Whitespace  [ \t]*
 Letter	    [a-zA-Z]
@@ -235,12 +235,12 @@ void yyerror(char *message){
 	fprintf(stderr, "Error at line %d: ",lineCount);
 	int j;
 	for(j=0;j<wordCount;j++)
-		fprintf(stderr,"%s",lineContents[wordCount]);
+		fprintf(stderr,"%s",lineContents[j]);
 	fprintf(stderr,"\n");
-	exit(1);
 	//free and reallocate, reset vars
 	freeLineContents();
 	lineContents = (char**) malloc(sizeof(char*) * numStrings);
+	exit(1);
 }
 
 /*-----------------------
