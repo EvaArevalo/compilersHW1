@@ -66,93 +66,93 @@ Pragma	    [#]
 <SINGLECOMMENT>.		{addWordToLine();}	
 <SINGLECOMMENT>\n 		{endOfLine();BEGIN(INITIAL);}
 
-void			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-int			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-double   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-bool   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-char   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-null   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-for   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-while   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-do   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-if   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-else   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-switch 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-return   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-break   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-continue 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-const   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-true   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-false   		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-struct  		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-case   			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-default 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+void			{printf("#key:%s\n",yytext);  addWordToLine();}
+int			{printf("#key:%s\n",yytext);  addWordToLine();}
+double   		{printf("#key:%s\n",yytext);  addWordToLine();}
+bool   			{printf("#key:%s\n",yytext);  addWordToLine();}
+char   			{printf("#key:%s\n",yytext);  addWordToLine();}
+null   			{printf("#key:%s\n",yytext);  addWordToLine();}
+for   			{printf("#key:%s\n",yytext);  addWordToLine();}
+while   		{printf("#key:%s\n",yytext);  addWordToLine();}
+do   			{printf("#key:%s\n",yytext);  addWordToLine();}
+if   			{printf("#key:%s\n",yytext);  addWordToLine();}
+else   			{printf("#key:%s\n",yytext);  addWordToLine();}
+switch 			{printf("#key:%s\n",yytext);  addWordToLine();}
+return   		{printf("#key:%s\n",yytext);  addWordToLine();}
+break   		{printf("#key:%s\n",yytext);  addWordToLine();}
+continue 		{printf("#key:%s\n",yytext);  addWordToLine();}
+const   		{printf("#key:%s\n",yytext);  addWordToLine();}
+true   			{printf("#key:%s\n",yytext);  addWordToLine();}
+false   		{printf("#key:%s\n",yytext);  addWordToLine();}
+struct  		{printf("#key:%s\n",yytext);  addWordToLine();}
+case   			{printf("#key:%s\n",yytext);  addWordToLine();}
+default 		{printf("#key:%s\n",yytext);  addWordToLine();}
 
-fclose 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-clearerr 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-feof 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-ferror 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fflush 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fgetpos 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fopen 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fread 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-freopen 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fseek 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fsetpos 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-ftell 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fwrite 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-remove 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-rename 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-rewind			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-setbuf 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-setvbuf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-tmpfile 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-tmpnam 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-ffprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-sfprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-vffprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-vfprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-vsfprintf 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fscanf 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-scanf 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-sscanf 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fgetc 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fgets			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fputc 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-fputs 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-getc 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-getchar 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-gets 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-putc 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-putchar 		{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-puts 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-ungetc 			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-perror			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
-printf			{fprintf(f,"#key:%s\n",yytext);  addWordToLine();}
+fclose 			{printf("#key:%s\n",yytext);  addWordToLine();}
+clearerr 		{printf("#key:%s\n",yytext);  addWordToLine();}
+feof 			{printf("#key:%s\n",yytext);  addWordToLine();}
+ferror 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fflush 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fgetpos 		{printf("#key:%s\n",yytext);  addWordToLine();}
+fopen 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fread 			{printf("#key:%s\n",yytext);  addWordToLine();}
+freopen 		{printf("#key:%s\n",yytext);  addWordToLine();}
+fseek 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fsetpos 		{printf("#key:%s\n",yytext);  addWordToLine();}
+ftell 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fwrite 			{printf("#key:%s\n",yytext);  addWordToLine();}
+remove 			{printf("#key:%s\n",yytext);  addWordToLine();}
+rename 			{printf("#key:%s\n",yytext);  addWordToLine();}
+rewind			{printf("#key:%s\n",yytext);  addWordToLine();}
+setbuf 			{printf("#key:%s\n",yytext);  addWordToLine();}
+setvbuf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+tmpfile 		{printf("#key:%s\n",yytext);  addWordToLine();}
+tmpnam 			{printf("#key:%s\n",yytext);  addWordToLine();}
+ffprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+fprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+sfprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+vffprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+vfprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+vsfprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+fscanf 			{printf("#key:%s\n",yytext);  addWordToLine();}
+scanf 			{printf("#key:%s\n",yytext);  addWordToLine();}
+sscanf 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fgetc 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fgets			{printf("#key:%s\n",yytext);  addWordToLine();}
+fputc 			{printf("#key:%s\n",yytext);  addWordToLine();}
+fputs 			{printf("#key:%s\n",yytext);  addWordToLine();}
+getc 			{printf("#key:%s\n",yytext);  addWordToLine();}
+getchar 		{printf("#key:%s\n",yytext);  addWordToLine();}
+gets 			{printf("#key:%s\n",yytext);  addWordToLine();}
+putc 			{printf("#key:%s\n",yytext);  addWordToLine();}
+putchar 		{printf("#key:%s\n",yytext);  addWordToLine();}
+puts 			{printf("#key:%s\n",yytext);  addWordToLine();}
+ungetc 			{printf("#key:%s\n",yytext);  addWordToLine();}
+perror			{printf("#key:%s\n",yytext);  addWordToLine();}
+printf			{printf("#key:%s\n",yytext);  addWordToLine();}
 
-"++"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-"--"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-"<="			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-">="			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-"=="			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-"!="			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-"&&"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-"||"			{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
+"++"			{printf("#op:%s\n",yytext);  addWordToLine();}
+"--"			{printf("#op:%s\n",yytext);  addWordToLine();}
+"<="			{printf("#op:%s\n",yytext);  addWordToLine();}
+">="			{printf("#op:%s\n",yytext);  addWordToLine();}
+"=="			{printf("#op:%s\n",yytext);  addWordToLine();}
+"!="			{printf("#op:%s\n",yytext);  addWordToLine();}
+"&&"			{printf("#op:%s\n",yytext);  addWordToLine();}
+"||"			{printf("#op:%s\n",yytext);  addWordToLine();}
 
 {Whitespace}		{addWordToLine();}
-{Operator}		{fprintf(f,"#op:%s\n",yytext);  addWordToLine();}
-{Punctuation}		{fprintf(f,"#punc:%s\n",yytext);  addWordToLine();}
-{Scidouble}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); }
-{Sciint}		{fprintf(f,"#sci:%s\n",yytext);  addWordToLine(); }
-{Double}		{fprintf(f,"#double:%s\n",yytext);  addWordToLine(); }
-{Integer}		{fprintf(f,"#integer:%s\n",yytext);  addWordToLine(); }
-{Char}			{fprintf(f,"#char:%s\n",yytext);  addWordToLine();}
-{Identifier}		{fprintf(f,"#id:%s\n",yytext);  addWordToLine();}
+{Operator}		{printf("#op:%s\n",yytext);  addWordToLine();}
+{Punctuation}		{printf("#punc:%s\n",yytext);  addWordToLine();}
+{Scidouble}		{printf("#sci:%s\n",yytext);  addWordToLine(); }
+{Sciint}		{printf("#sci:%s\n",yytext);  addWordToLine(); }
+{Double}		{printf("#double:%s\n",yytext);  addWordToLine(); }
+{Integer}		{printf("#integer:%s\n",yytext);  addWordToLine(); }
+{Char}			{printf("#char:%s\n",yytext);  addWordToLine();}
+{Identifier}		{printf("#id:%s\n",yytext);  addWordToLine();}
 {String}		{char *stringtext= (char*)malloc(sizeof(char)*(yyleng-1));
 			strncpy(stringtext,&yytext[1],yyleng-2);
 			strncpy(&stringtext[yyleng-2],&yytext[yyleng],1);
-			fprintf(f,"#string:%s\n",stringtext);
+			printf("#string:%s\n",stringtext);
 			addWordToLine();
 			free(stringtext);}
 {Invalidnum}		{freeLineContents();
@@ -182,11 +182,11 @@ int main(int argc, char*argv[]){
   	yyin=stdin;
   }
   
-  f = fopen("tokens","w");
+  //f = fopen("tokens","w");
 
   lineContents = (char**)malloc(sizeof(char*)*numStrings);  
   yylex();
-  fclose(f);
+  //fclose(f);
   freeLineContents();
   return 0;
 } 
@@ -212,11 +212,11 @@ void endOfLine(){
 	//print line
 	lineCount++;
 
-	fprintf(f,"%d:", lineCount);
+	printf("%d:", lineCount);
 	int j;
 	for(j=0;j<wordCount;j++)
-		fprintf(f,"%s",lineContents[j]);
-	fprintf(f,"\n");
+		printf("%s",lineContents[j]);
+	printf("\n");
 
 	//free and reallocate, reset vars
 	freeLineContents();
