@@ -108,12 +108,12 @@ setbuf 			{printf("#key:%s\n",yytext);  addWordToLine();}
 setvbuf 		{printf("#key:%s\n",yytext);  addWordToLine();}
 tmpfile 		{printf("#key:%s\n",yytext);  addWordToLine();}
 tmpnam 			{printf("#key:%s\n",yytext);  addWordToLine();}
-ffprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
 fprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
-sfprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
-vffprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+printf	 		{printf("#key:%s\n",yytext);  addWordToLine();}
+sprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
 vfprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
-vsfprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+vprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
+vsprintf 		{printf("#key:%s\n",yytext);  addWordToLine();}
 fscanf 			{printf("#key:%s\n",yytext);  addWordToLine();}
 scanf 			{printf("#key:%s\n",yytext);  addWordToLine();}
 sscanf 			{printf("#key:%s\n",yytext);  addWordToLine();}
@@ -129,7 +129,7 @@ putchar 		{printf("#key:%s\n",yytext);  addWordToLine();}
 puts 			{printf("#key:%s\n",yytext);  addWordToLine();}
 ungetc 			{printf("#key:%s\n",yytext);  addWordToLine();}
 perror			{printf("#key:%s\n",yytext);  addWordToLine();}
-printf			{printf("#key:%s\n",yytext);  addWordToLine();}
+ffprintf		{printf("#key:%s\n",yytext);  addWordToLine();}
 
 "++"			{printf("#op:%s\n",yytext);  addWordToLine();}
 "--"			{printf("#op:%s\n",yytext);  addWordToLine();}
